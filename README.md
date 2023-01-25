@@ -6,9 +6,9 @@
  0) import libraries and set the variables 
  1) Set the vectors stain
  2) Detect the bubbles and merges them together
- 2b) Detect the pollution particles and merge the bubbles + pollution annotation, rename it bubbles
+ 2) Detect the pollution particles and merge the bubbles + pollution annotation, rename it bubbles
  3) remove the area of the annotation Bulle from the area of annotation Tissu
- 3b) rename class TissuBis in Tissu
+ 3) rename class TissuBis in Tissu
  4) Script to help with annotating tumor regions, separating the tumor margin from the center. 
  5) remove annotation Inner, Center from the area of annotation Tissu
  6) Detect the pollution particles
