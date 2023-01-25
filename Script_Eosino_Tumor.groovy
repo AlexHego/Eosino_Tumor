@@ -1,7 +1,7 @@
 /*
 January 2023, Qupath version  0.4.1
-
- @author Alexandre Hego
+BSD 3-Clause License
+@author Alexandre Hego
  
  contact: alexandre.hego@uliege.be
  GIGA Cell imaging facility
