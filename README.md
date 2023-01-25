@@ -20,8 +20,6 @@
  11) Detect the positive cells in tissu, outer, inner, center zones
  12) Save the annotations
  **************************************************************************
- 
- **************************************************************************
  Tutorial
  
  0) Possibility to change the model for anthracose a,d the size of the margin for inner, outer zones
