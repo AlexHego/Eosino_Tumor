@@ -2,6 +2,7 @@
 
  **************************************************************************
  Goal:
+ 
  0) import libraries and set the variables 
  1) Set the vectors stain
  2) Detect the bubbles and merges them together
@@ -22,6 +23,7 @@
  
  **************************************************************************
  Tutorial
+ 
  0) Possibility to change the model for anthracose a,d the size of the margin for inner, outer zones
  1) Set the stainning vectors for the current batch 
  2) use the brush tool to annotate the bubbles, or all the zone we want to exclude and set them in class Bulle
@@ -30,4 +32,4 @@
  Warning the Tumor zone need a size 2x of the expandMarginMicrons variable
  5) Select Run > Run for project
  **************************************************************************
- */
+
