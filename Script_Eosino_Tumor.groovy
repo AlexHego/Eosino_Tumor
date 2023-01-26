@@ -359,30 +359,14 @@ runPlugin('qupath.imagej.detect.cells.PositiveCellDetection', '{"detectionImageB
 /* 12) Save the annotations
 ***************************************************************************************************/
 path = buildFilePath(PROJECT_BASE_DIR, 'Measurements')
-
-name1 = getProjectEntry().getImageName() + '_tissu.tsv'
-name2 = getProjectEntry().getImageName() + '_Inner.tsv'
-name3 = getProjectEntry().getImageName() + '_Outer.tsv'
-name4 = getProjectEntry().getImageName() + '_Center.tsv'
+name = getProjectEntry().getImageName() + '.tsv'
 
 //make sure the directory exists
 mkdirs(path)
-
 // Save the results
-path1 = buildFilePath(path, name1)
-path2 = buildFilePath(path, name2)
-path3 = buildFilePath(path, name3)
-path4 = buildFilePath(path, name4)
-
+path = buildFilePath(path, name)
 selectObjectsByClassification("Tissu")
-saveAnnotationMeasurements(path1)
+saveAnnotationMeasurements(path)
 
-selectObjectsByClassification("Inner")
-saveAnnotationMeasurements(path2)
 
-selectObjectsByClassification("Outer")
-saveAnnotationMeasurements(path3)
-
-selectObjectsByClassification("Center")
-saveAnnotationMeasurements(path4)
 
