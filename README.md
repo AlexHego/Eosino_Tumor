@@ -9,9 +9,9 @@ These scripts are designed to analyze lung cancer tissue samples using the softw
 ## Usage
 
 To run the script, please create a project in QuPath and upload your images. The images must contain an annotation for at least the tissu and the tumor.
+Download
 Open the script editor on QuPath. "Automate" > " Show script editor"
 Open the github page of the script 
-
 [ Script_Eosino_tumor ](https://github.com/AlexHego/Eosino_Tumor/blob/main/Script_Eosino_Tumor.groovy) , BSD-3 licence </br>
 
 [ Script_Eosino_tumor_expandonly ](https://github.com/AlexHego/Eosino_Tumor/blob/main/Script_Eosino_Tumor_expandonly.groovy) , BSD-3 licence </br>
