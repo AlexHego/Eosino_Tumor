@@ -8,16 +8,18 @@ These scripts are designed to analyze lung cancer tissue samples using the softw
 
 ## Usage
 
-To run the script, please create a project in QuPath and upload your images. The images must contain an annotation for at least the tissu and the tumor.
-Download
-Open the script editor on QuPath. "Automate" > " Show script editor"
-Open the github page of the script 
-[ Script_Eosino_tumor ](https://github.com/AlexHego/Eosino_Tumor/blob/main/Script_Eosino_Tumor.groovy) , BSD-3 licence </br>
+To run the script, please create a project in QuPath (empty folder) and upload your images. The images must contain an annotation for at least the tissu and the tumor.
+* Download the model and save it in .JSON format </br> 
+The path must be project_folder\classifiers\pixel_classifiers\18-01-2023- 2-detection anthracose sur Batch Very hight - Copie avec etoile  </br>
+[Download the model_anthracose ](https://raw.githubusercontent.com/AlexHego/Eosino_Tumor/main/18-01-2023-%202-detection%20anthracose%20sur%20Batch%20Very%20hight%20-%20Copie%20avec%20etoile.json?token=GHSAT0AAAAAAB5UHE7GCXRDKU7WNN7WCJQAY6TUXWQ) </br>
 
+* Open the script editor on QuPath. "Automate" > " Show script editor" </br>
+* Open the github page of one of the scripts </br>
+[ Script_Eosino_tumor ](https://github.com/AlexHego/Eosino_Tumor/blob/main/Script_Eosino_Tumor.groovy) , BSD-3 licence </br>
 [ Script_Eosino_tumor_expandonly ](https://github.com/AlexHego/Eosino_Tumor/blob/main/Script_Eosino_Tumor_expandonly.groovy) , BSD-3 licence </br>
 
-Copy and paste the code in the script editor
-Then, simply run the script by selecting "run" > "run for project" in QuPath.
+* Copy and paste the code in the script editor
+* Then, simply run the script by selecting "run" > "run for project" in QuPath.
 
 
 ## Output
