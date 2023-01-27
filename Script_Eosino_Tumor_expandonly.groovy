@@ -50,7 +50,7 @@ import qupath.lib.roi.ROIs
 import static qupath.lib.gui.scripting.QPEx.*
 
 // Set the model of random forest to detect anthracose
-model_anthracose = "18-01-2023- 2-detection anthracose sur Batch Very hight - Copie avec etoile"
+model_anthracose = "anthracose"
 
 // How much to expand each region
 double expandMarginMicrons = 1200
