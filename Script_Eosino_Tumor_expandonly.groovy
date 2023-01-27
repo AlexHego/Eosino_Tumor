@@ -295,10 +295,10 @@ clearSelectedObjects(false)
 
 /* 11) Detect the positive cells
 ***************************************************************************************************/
-selectObjectsByClassification("Outer")
+selectObjectsByClassification("Outer_internal")
 runPlugin('qupath.imagej.detect.cells.PositiveCellDetection', '{"detectionImageBrightfield": "Optical density sum",  "requestedPixelSizeMicrons": 0.5,  "backgroundRadiusMicrons": 13.0,  "medianRadiusMicrons": 0.0,  "sigmaMicrons": 1.7,  "minAreaMicrons": 15.0,  "maxAreaMicrons": 200.0,  "threshold": 0.5,  "maxBackground": 0.0,  "watershedPostProcess": false,  "excludeDAB": false,  "cellExpansionMicrons": 3.0,  "includeNuclei": true,  "smoothBoundaries": true,  "makeMeasurements": true,  "thresholdCompartment": "Cell: DAB OD mean",  "thresholdPositive1": 0.05,  "thresholdPositive2": 0.4,  "thresholdPositive3": 0.6000000000000001,  "singleThreshold": true}');
 
-selectObjectsByClassification("Inner")
+selectObjectsByClassification("Outer_external")
 runPlugin('qupath.imagej.detect.cells.PositiveCellDetection', '{"detectionImageBrightfield": "Optical density sum",  "requestedPixelSizeMicrons": 0.5,  "backgroundRadiusMicrons": 13.0,  "medianRadiusMicrons": 0.0,  "sigmaMicrons": 1.7,  "minAreaMicrons": 15.0,  "maxAreaMicrons": 200.0,  "threshold": 0.5,  "maxBackground": 0.0,  "watershedPostProcess": false,  "excludeDAB": false,  "cellExpansionMicrons": 3.0,  "includeNuclei": true,  "smoothBoundaries": true,  "makeMeasurements": true,  "thresholdCompartment": "Cell: DAB OD mean",  "thresholdPositive1": 0.05,  "thresholdPositive2": 0.4,  "thresholdPositive3": 0.6000000000000001,  "singleThreshold": true}');
 
 selectObjectsByClassification("Tumor")
