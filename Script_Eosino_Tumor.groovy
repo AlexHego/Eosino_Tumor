@@ -53,7 +53,7 @@ import static qupath.lib.gui.scripting.QPEx.*
 model_anthracose = "anthracose"
 
 // How much to expand each region
-double expandMarginMicrons = 200
+double expandMarginMicrons = 1200
 
 // Define the colors
 def coloInnerMargin = getColorRGB(0, 0, 200)
