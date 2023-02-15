@@ -48,6 +48,8 @@ import qupath.lib.objects.PathObjects
 import qupath.lib.roi.GeometryTools
 import qupath.lib.roi.ROIs
 import static qupath.lib.gui.scripting.QPEx.*
+import qupath.lib.roi.ShapeSimplifier
+double altitudeThreshold = 10.0 // Higher value results in simpler polygons/fewer vertices
 
 // Set the model of random forest to detect anthracose
 model_anthracose = "anthracose"
@@ -60,9 +62,9 @@ def colorInnerMargin = getColorRGB(0, 0, 200)
 def colorOuterMargin = getColorRGB(0, 200, 0)
 def colorCentral = getColorRGB(200, 0, 0)
 
-/* 1)  Set the vectors stain
+/* 1)  Set the vectors stain (if needed)
 ****************************************************/
-setColorDeconvolutionStains('{"Name" : "H-DAB estimated", "Stain 1" : "Hematoxylin", "Values 1" : "0.66034 0.69836 0.27614", "Stain 2" : "DAB", "Values 2" : "0.50613 0.58015 0.63817", "Background" : " 187 182 174"}');
+//setColorDeconvolutionStains('{"Name" : "H-DAB estimated", "Stain 1" : "Hematoxylin", "Values 1" : "0.66034 0.69836 0.27614", "Stain 2" : "DAB", "Values 2" : "0.50613 0.58015 0.63817", "Background" : " 187 182 174"}');
 
 
 /* 2) Detect the bubbles or Tumor and merges them together
@@ -100,6 +102,47 @@ clearSelectedObjects(false)
 def currentClass = getPathClass("Tissubis")  
 def newClass = getPathClass("Tissu")
 getAnnotationObjects().each { annotation ->  if (annotation.getPathClass().equals(currentClass)) annotation.setPathClass(newClass)}
+
+
+
+/*3bis Simplify Tissu annotation
+ * ***************************************************************************************************/
+
+selectObjectsByClassification("Tissu")
+complexAnno = getSelectedObjects()
+simplifiedAnno = complexAnno.collect{
+    simpleRoi = ShapeSimplifier.simplifyShape(it.getROI(), altitudeThreshold)
+    simpleAnno = PathObjects.createAnnotationObject(simpleRoi, getPathClass("Simplified Annotation"))
+    return simpleAnno
+}
+addObjects(simplifiedAnno)
+
+selectObjectsByClassification("Tissu")
+clearSelectedObjects(false)
+currentClass = getPathClass("Simplified Annotation")  
+newClass = getPathClass("Tissu")
+getAnnotationObjects().each { annotation ->  if (annotation.getPathClass().equals(currentClass)) annotation.setPathClass(newClass)}
+
+
+/*3ter Simplify Tumor annotation
+ * ***************************************************************************************************/
+
+selectObjectsByClassification("Tumor")
+complexAnno = getSelectedObjects()
+
+simplifiedAnno = complexAnno.collect{
+    simpleRoi = ShapeSimplifier.simplifyShape(it.getROI(), altitudeThreshold)
+    simpleAnno = PathObjects.createAnnotationObject(simpleRoi, getPathClass("Simplified Annotation"))
+    return simpleAnno
+}
+addObjects(simplifiedAnno)
+
+selectObjectsByClassification("Tumor")
+clearSelectedObjects(false)
+currentClass = getPathClass("Simplified Annotation")  
+newClass = getPathClass("Tumor")
+getAnnotationObjects().each { annotation ->  if (annotation.getPathClass().equals(currentClass)) annotation.setPathClass(newClass)}
+
 
 
 /* 4) Script to help with annotating tumor regions, separating the tumor margin from the center.
@@ -205,14 +248,24 @@ clearSelectedObjects(false)
 
 /* 6) Detect the pollution particles 
 ***************************************************************************************************/
-selectAnnotations();
-createAnnotationsFromPixelClassifier(model_anthracose, 1.0, 5.0)
-selectObjectsByClassification("pollution")
+rois = getAnnotationObjects().collect{it.getROI()}
+newAnnotations = []
+
+rois.each{
+    newAnnotations << PathObjects.createAnnotationObject(it, getPathClass("duplicateAnnotation"))
+}
+
+addObjects(newAnnotations)
+
+selectObjectsByClassification("duplicateAnnotation");
 mergeSelectedAnnotations();
 
-resultingClass = getPathClass("pollution")
-toChange = getAnnotationObjects().findAll{it.getPathClass() == null}
-toChange.each{ it.setPathClass(resultingClass)}
+selectObjectsByClassification("duplicateAnnotation");
+createAnnotationsFromPixelClassifier(model_anthracose, 1.0, 5.0)
+
+
+selectObjectsByClassification("duplicateAnnotation")
+clearSelectedObjects(true)
 
 ////////////////////////////////////////////////////////////////////////////
 // reclaim memory from the classifier
@@ -295,14 +348,15 @@ clearSelectedObjects(false)
 
 /* 11) Detect the positive cells
 ***************************************************************************************************/
-selectObjectsByClassification("Outer_internal")
-runPlugin('qupath.imagej.detect.cells.PositiveCellDetection', '{"detectionImageBrightfield": "Optical density sum",  "requestedPixelSizeMicrons": 0.5,  "backgroundRadiusMicrons": 13.0,  "medianRadiusMicrons": 0.0,  "sigmaMicrons": 1.7,  "minAreaMicrons": 15.0,  "maxAreaMicrons": 200.0,  "threshold": 0.5,  "maxBackground": 0.0,  "watershedPostProcess": false,  "excludeDAB": false,  "cellExpansionMicrons": 3.0,  "includeNuclei": true,  "smoothBoundaries": true,  "makeMeasurements": true,  "thresholdCompartment": "Cell: DAB OD mean",  "thresholdPositive1": 0.05,  "thresholdPositive2": 0.4,  "thresholdPositive3": 0.6000000000000001,  "singleThreshold": true}');
-
 selectObjectsByClassification("Outer_external")
-runPlugin('qupath.imagej.detect.cells.PositiveCellDetection', '{"detectionImageBrightfield": "Optical density sum",  "requestedPixelSizeMicrons": 0.5,  "backgroundRadiusMicrons": 13.0,  "medianRadiusMicrons": 0.0,  "sigmaMicrons": 1.7,  "minAreaMicrons": 15.0,  "maxAreaMicrons": 200.0,  "threshold": 0.5,  "maxBackground": 0.0,  "watershedPostProcess": false,  "excludeDAB": false,  "cellExpansionMicrons": 3.0,  "includeNuclei": true,  "smoothBoundaries": true,  "makeMeasurements": true,  "thresholdCompartment": "Cell: DAB OD mean",  "thresholdPositive1": 0.05,  "thresholdPositive2": 0.4,  "thresholdPositive3": 0.6000000000000001,  "singleThreshold": true}');
+runPlugin('qupath.imagej.detect.cells.PositiveCellDetection', '{"detectionImageBrightfield": "Optical density sum",  "requestedPixelSizeMicrons": 0.5,  "backgroundRadiusMicrons": 13.0,  "medianRadiusMicrons": 0.0,  "sigmaMicrons": 1.7,  "minAreaMicrons": 15.0,  "maxAreaMicrons": 315.0,  "threshold": 0.3,  "maxBackground": 0.0,  "watershedPostProcess": false,  "excludeDAB": false,  "cellExpansionMicrons": 3.0,  "includeNuclei": true,  "smoothBoundaries": true,  "makeMeasurements": true,  "thresholdCompartment": "Cell: DAB OD mean",  "thresholdPositive1": 0.04,  "thresholdPositive2": 0.1,  "thresholdPositive3": 0.3,  "singleThreshold": false}');
+
+selectObjectsByClassification("Outer_internal")
+runPlugin('qupath.imagej.detect.cells.PositiveCellDetection', '{"detectionImageBrightfield": "Optical density sum",  "requestedPixelSizeMicrons": 0.5,  "backgroundRadiusMicrons": 13.0,  "medianRadiusMicrons": 0.0,  "sigmaMicrons": 1.7,  "minAreaMicrons": 15.0,  "maxAreaMicrons": 315.0,  "threshold": 0.3,  "maxBackground": 0.0,  "watershedPostProcess": false,  "excludeDAB": false,  "cellExpansionMicrons": 3.0,  "includeNuclei": true,  "smoothBoundaries": true,  "makeMeasurements": true,  "thresholdCompartment": "Cell: DAB OD mean",  "thresholdPositive1": 0.04,  "thresholdPositive2": 0.1,  "thresholdPositive3": 0.3,  "singleThreshold": false}');
 
 selectObjectsByClassification("Tumor")
-runPlugin('qupath.imagej.detect.cells.PositiveCellDetection', '{"detectionImageBrightfield": "Optical density sum",  "requestedPixelSizeMicrons": 0.5,  "backgroundRadiusMicrons": 13.0,  "medianRadiusMicrons": 0.0,  "sigmaMicrons": 1.7,  "minAreaMicrons": 15.0,  "maxAreaMicrons": 200.0,  "threshold": 0.5,  "maxBackground": 0.0,  "watershedPostProcess": false,  "excludeDAB": false,  "cellExpansionMicrons": 3.0,  "includeNuclei": true,  "smoothBoundaries": true,  "makeMeasurements": true,  "thresholdCompartment": "Cell: DAB OD mean",  "thresholdPositive1": 0.05,  "thresholdPositive2": 0.4,  "thresholdPositive3": 0.6000000000000001,  "singleThreshold": true}');
+runPlugin('qupath.imagej.detect.cells.PositiveCellDetection', '{"detectionImageBrightfield": "Optical density sum",  "requestedPixelSizeMicrons": 0.5,  "backgroundRadiusMicrons": 13.0,  "medianRadiusMicrons": 0.0,  "sigmaMicrons": 1.7,  "minAreaMicrons": 15.0,  "maxAreaMicrons": 315.0,  "threshold": 0.3,  "maxBackground": 0.0,  "watershedPostProcess": false,  "excludeDAB": false,  "cellExpansionMicrons": 3.0,  "includeNuclei": true,  "smoothBoundaries": true,  "makeMeasurements": true,  "thresholdCompartment": "Cell: DAB OD mean",  "thresholdPositive1": 0.04,  "thresholdPositive2": 0.1,  "thresholdPositive3": 0.3,  "singleThreshold": false}');
+
 
 
 
