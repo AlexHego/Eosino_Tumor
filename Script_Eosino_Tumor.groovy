@@ -1,5 +1,6 @@
 /*
 January 2023, Qupath version  0.4.1
+
 BSD 3-Clause License
 @author Alexandre Hego
  
@@ -13,6 +14,8 @@ BSD 3-Clause License
  1) Set the vectors stain
  2) Detect the bubbles and merges them together
  3) remove the area of the annotation Bulle from the area of annotation Tissu
+ 3b) Simplify Tissu annotation
+ 3c) Simplify Tissu annotation
  4) Script to help with annotating tumor regions, separating the tumor margin from the center. 
  5) remove annotation Inner, Center from the area of annotation Tissu
  6) Detect the pollution particles
@@ -53,7 +56,7 @@ import static qupath.lib.gui.scripting.QPEx.*
 model_anthracose = "anthracose"
 
 // How much to expand each region
-double expandMarginMicrons = 1200
+double expandMarginMicrons = 200
 
 // Define the colors
 def coloInnerMargin = getColorRGB(0, 0, 200)
@@ -99,6 +102,46 @@ clearSelectedObjects(false)
 
 def currentClass = getPathClass("Tissubis")  
 def newClass = getPathClass("Tissu")
+getAnnotationObjects().each { annotation ->  if (annotation.getPathClass().equals(currentClass)) annotation.setPathClass(newClass)}
+
+
+
+/*3b) Simplify Tissu annotation
+ * ***************************************************************************************************/
+
+selectObjectsByClassification("Tissu")
+complexAnno = getSelectedObjects()
+simplifiedAnno = complexAnno.collect{
+    simpleRoi = ShapeSimplifier.simplifyShape(it.getROI(), altitudeThreshold)
+    simpleAnno = PathObjects.createAnnotationObject(simpleRoi, getPathClass("Simplified Annotation"))
+    return simpleAnno
+}
+addObjects(simplifiedAnno)
+
+selectObjectsByClassification("Tissu")
+clearSelectedObjects(false)
+currentClass = getPathClass("Simplified Annotation")  
+newClass = getPathClass("Tissu")
+getAnnotationObjects().each { annotation ->  if (annotation.getPathClass().equals(currentClass)) annotation.setPathClass(newClass)}
+
+
+/*3c) Simplify Tumor annotation
+ * ***************************************************************************************************/
+
+selectObjectsByClassification("Tumor")
+complexAnno = getSelectedObjects()
+
+simplifiedAnno = complexAnno.collect{
+    simpleRoi = ShapeSimplifier.simplifyShape(it.getROI(), altitudeThreshold)
+    simpleAnno = PathObjects.createAnnotationObject(simpleRoi, getPathClass("Simplified Annotation"))
+    return simpleAnno
+}
+addObjects(simplifiedAnno)
+
+selectObjectsByClassification("Tumor")
+clearSelectedObjects(false)
+currentClass = getPathClass("Simplified Annotation")  
+newClass = getPathClass("Tumor")
 getAnnotationObjects().each { annotation ->  if (annotation.getPathClass().equals(currentClass)) annotation.setPathClass(newClass)}
 
 
@@ -196,7 +239,7 @@ selectObjectsByClassification("Tumor")
 clearSelectedObjects(false)
 
 
-/* 5) remove annotation Inner, Center from the area of annotation Tissu
+/* 5) remove annotation Outer, Inner, Center from the area of annotation Tissu
 ***************************************************************************************************/
 tissueAnnotation = getAnnotationObjects().find{it.getPathClass() == getPathClass("Tissu")}
 tissueGeom = tissueAnnotation.getROI().getGeometry()
@@ -312,7 +355,7 @@ currentClass = getPathClass("Innerbis")
 newClass = getPathClass("Inner")
 getAnnotationObjects().each { annotation ->  if (annotation.getPathClass().equals(currentClass)) annotation.setPathClass(newClass)}
 
-/* 9) remove the area of pollution from the area of annotation Inner
+/* 9) remove the area of pollution from the area of annotation Center
 ***************************************************************************************************/
 tissueAnnotation = getAnnotationObjects().find{it.getPathClass() == getPathClass("Center")}
 tissueGeom = tissueAnnotation.getROI().getGeometry()
@@ -359,14 +402,15 @@ runPlugin('qupath.imagej.detect.cells.PositiveCellDetection', '{"detectionImageB
 /* 12) Save the annotations
 ***************************************************************************************************/
 path = buildFilePath(PROJECT_BASE_DIR, 'Measurements')
+
 name = getProjectEntry().getImageName() + '.tsv'
+
 
 //make sure the directory exists
 mkdirs(path)
+
 // Save the results
 path = buildFilePath(path, name)
 selectObjectsByClassification("Tissu")
 saveAnnotationMeasurements(path)
-
-
 
