@@ -14,6 +14,8 @@ BSD 3-Clause License
  1) Set the vectors stain
  2) Detect the bubbles and merges them together
  3) remove the area of the annotation Bulle from the area of annotation Tissu
+ 3b) Simplify Tissu annotation
+ 3c) Simplify Tumor annotation
  4) Script to help with annotating tumor regions, separating the tumor margin from the center. 
  5) 5) remove annotation Tissu and Tumor
  6) Detect the pollution particles
