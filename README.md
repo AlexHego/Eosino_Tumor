@@ -9,9 +9,9 @@ These scripts are designed to analyze lung cancer tissue samples using the softw
 ## Usage
 
 To run the script, please create a project in QuPath (empty folder) and upload your images. The images must contain an annotation for at least the tissu and the tumor.
-* Download the model and save it in .JSON format </br> 
-The path must be project_folder\classifiers\pixel_classifiers\18-01-2023- 2-detection anthracose sur Batch Very hight - Copie avec etoile  </br>
-[Download the model_anthracose ](https://raw.githubusercontent.com/AlexHego/Eosino_Tumor/main/anthracose.json) </br>
+* Download the model, unzip it and save it in the pixel classifier folder </br> 
+The path must be project_folder\classifiers\pixel_classifiers\anthracose  </br>
+[Download the model_anthracose ](https://github.com/AlexHego/Eosino_Tumor/blob/main/anthracose.zip) </br>
 
 * Open the script editor on QuPath. "Automate" > " Show script editor" </br>
 * Open the github page of one of the scripts </br>
